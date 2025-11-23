@@ -1,14 +1,18 @@
 import React from 'react';
-import { getCourses } from '@/db/queries';
+import { getCourses, getUserProgress } from '@/db/queries';
 import List from './List';
 
 const CoursesPage = async () => {
-  const courses = await getCourses();
-  console.log(courses);
+  const coursesPromise = getCourses();
+  const userProgressPromise = getUserProgress();
+  const [courses, userProgress] = await Promise.all([
+    coursesPromise,
+    userProgressPromise,
+  ]);
   return (
     <div className="h-full max-w-4xl mx-auto px-3">
       <h1 className="text-2xl font-bold">Language Courses</h1>
-      <List courses={courses} activeCourseId={2} />
+      <List courses={courses} activeCourseId={userProgress?.activeCourseId} />
     </div>
   );
 };

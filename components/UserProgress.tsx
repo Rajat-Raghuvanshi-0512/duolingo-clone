@@ -1,14 +1,13 @@
-import React from 'react';
 import Image from 'next/image';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { InfinityIcon } from 'lucide-react';
-import { courses } from '@/db/schema';
+import { courses, userProgress } from '@/db/schema';
 
 type UserProgressProps = {
-  activeCourse: typeof courses.$inferSelect; // TODO: Add type for active course
-  hearts: number;
-  points: number;
+  activeCourse: typeof courses.$inferSelect;
+  hearts: (typeof userProgress.$inferSelect)['hearts'];
+  points: (typeof userProgress.$inferSelect)['points'];
   hasActiveSubscription: boolean;
 };
 

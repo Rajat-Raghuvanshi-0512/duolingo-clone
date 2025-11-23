@@ -1,4 +1,5 @@
-import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const courses = pgTable('courses', {
   id: serial('id').primaryKey(),
@@ -7,3 +8,26 @@ export const courses = pgTable('courses', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
+
+export const coursesRelations = relations(courses, ({ many }) => ({
+  userProgress: many(userProgress),
+}));
+
+export const userProgress = pgTable('user_progress', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  userName: text('user_name').notNull(),
+  userImageSrc: text('user_image_src').notNull().default('/icons/user.svg'),
+  activeCourseId: integer('active_course_id').references(() => courses.id, {
+    onDelete: 'cascade',
+  }),
+  hearts: integer('hearts').notNull().default(5),
+  points: integer('points').notNull().default(0),
+});
+
+export const userProgressRelations = relations(userProgress, ({ one }) => ({
+  activeCourse: one(courses, {
+    fields: [userProgress.activeCourseId],
+    references: [courses.id],
+  }),
+}));
