@@ -89,7 +89,7 @@ const main = async () => {
     await db.insert(schema.challenges).values([
       {
         id: 1,
-        question: 'What is the capital of France?',
+        question: 'Which of these is the "the man"?',
         lessonId: 1,
         order: 1,
         type: 'SELECT',
@@ -105,31 +105,27 @@ const main = async () => {
     await db.insert(schema.challengeOptions).values([
       {
         id: 1,
-        text: 'Paris',
+        text: 'El hombre',
         correct: true,
         challengeId: 1,
-        imageSrc: '/flags/FR.svg',
+        imageSrc: '/man.webp',
+        audioSrc: '/audio/spanish/the-man.mp3',
       },
       {
         id: 2,
-        text: 'Tokyo',
+        text: 'La mujer',
         correct: false,
         challengeId: 1,
-        imageSrc: '/flags/JP.svg',
+        imageSrc: '/woman.webp',
+        audioSrc: '/audio/spanish/the-women.mp3',
       },
       {
         id: 3,
-        text: 'Madrid',
+        text: 'La leche',
         correct: false,
         challengeId: 1,
-        imageSrc: '/flags/ES.svg',
-      },
-      {
-        id: 4,
-        text: 'Berlin',
-        correct: false,
-        challengeId: 1,
-        imageSrc: '/flags/DE.svg',
+        imageSrc: '/boy.webp',
+        audioSrc: '/audio/spanish/the-milk.mp3',
       },
     ]);
     console.log('DB seeded');
