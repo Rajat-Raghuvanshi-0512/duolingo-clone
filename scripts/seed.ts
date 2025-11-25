@@ -96,9 +96,16 @@ const main = async () => {
       },
       {
         id: 2,
-        question: 'What is the capital of Japan?',
+        question: 'the man',
         lessonId: 1,
         order: 2,
+        type: 'ASSIST',
+      },
+      {
+        id: 3,
+        question: 'Which of these is the "the milk"?',
+        lessonId: 1,
+        order: 3,
         type: 'SELECT',
       },
     ]);
@@ -126,6 +133,48 @@ const main = async () => {
         challengeId: 1,
         imageSrc: '/boy.webp',
         audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      {
+        id: 4,
+        text: 'El hombre',
+        correct: true,
+        challengeId: 2,
+      },
+      {
+        id: 5,
+        text: 'La mujer',
+        correct: false,
+        challengeId: 2,
+      },
+      {
+        id: 6,
+        text: 'La leche',
+        correct: false,
+        challengeId: 2,
+      },
+      {
+        id: 7,
+        text: 'La leche',
+        correct: true,
+        challengeId: 3,
+        imageSrc: '/milk.webp',
+        audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      {
+        id: 8,
+        text: 'El hombre',
+        correct: false,
+        challengeId: 3,
+        imageSrc: '/man.webp',
+        audioSrc: '/audio/spanish/the-man.mp3',
+      },
+      {
+        id: 9,
+        text: 'La mujer',
+        correct: false,
+        challengeId: 3,
+        imageSrc: '/woman.webp',
+        audioSrc: '/audio/spanish/the-women.mp3',
       },
     ]);
     console.log('DB seeded');

@@ -16,8 +16,7 @@ const LessonPage = async () => {
   }
 
   const initialPercentage =
-    ((await lesson.challenges.filter((challenge) => challenge.completed)
-      .length) /
+    (lesson.challenges.filter((challenge) => challenge.completed).length /
       lesson.challenges.length) *
     100;
   return (

@@ -27,9 +27,7 @@ const LearnPage = async () => {
   if (!userProgress || !userProgress.activeCourse) {
     return redirect('/courses');
   }
-  if (!courseProgress || !courseProgress.activeLesson) {
-    return redirect('/courses');
-  }
+
   return (
     <div className="flex flex-row-reverse gap-12 px-6">
       <StickyWrapper>

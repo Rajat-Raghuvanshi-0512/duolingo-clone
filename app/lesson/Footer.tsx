@@ -11,7 +11,7 @@ type FooterProps = {
   onCheck: () => void;
 };
 const Footer = ({ disabled, status, onCheck, lessonId }: FooterProps) => {
-  const isMobile = useMedia('(max-width: 1024px)');
+  const isMobile = useMedia('(max-width: 1024px)', false);
   useKey('Enter', onCheck, {}, [onCheck]);
   return (
     <footer
