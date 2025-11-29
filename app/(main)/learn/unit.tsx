@@ -25,7 +25,6 @@ const UnitCard = ({
   activeLesson,
   activeLessonPercentage = 0,
 }: UnitCardProps) => {
-  console.log('lessons', lessons);
   return (
     <>
       <UnitBanner title={title} description={description} />

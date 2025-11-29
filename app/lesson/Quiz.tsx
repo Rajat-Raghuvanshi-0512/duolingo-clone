@@ -106,8 +106,6 @@ const Quiz = ({
               return;
             }
             setStatus('correct');
-            console.log('percentage', percentage);
-            console.log('challenges.length', challenges.length);
             setPercentage((prev) => prev + 100 / challenges.length);
             correctControls.play();
 

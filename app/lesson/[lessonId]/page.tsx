@@ -15,7 +15,6 @@ const LessonIdPage = async ({
     lessonPromise,
     userProgressPromise,
   ]);
-  console.log(lesson);
 
   if (!lesson || !userProgress) {
     return redirect('/learn');

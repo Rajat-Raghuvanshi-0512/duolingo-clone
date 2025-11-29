@@ -47,13 +47,6 @@ const LessonButton = ({
   const Icon = isCompleted ? Check : isLastItem ? Crown : Star;
   const href = isCompleted ? `/lesson/${id}` : `/lesson`;
 
-  console.log('percentage', percentage);
-  console.log('isCompleted', isCompleted);
-  console.log('isLastItem', isLastItem);
-  console.log('href', href);
-  console.log('locked', locked);
-  console.log('current', current);
-
   return (
     <Link
       href={href}

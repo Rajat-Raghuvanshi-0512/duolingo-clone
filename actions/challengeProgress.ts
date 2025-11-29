@@ -31,7 +31,6 @@ export const updateChallengeProgress = async (challengeId: number) => {
       eq(challengeProgress.challengeId, challengeId)
     ),
   });
-  console.log('existingLessonProgress', existingLessonProgress);
   const isPractice = !!existingLessonProgress;
   if (currentUserProgress.hearts === 0 && !isPractice) {
     return { error: 'hearts' };
