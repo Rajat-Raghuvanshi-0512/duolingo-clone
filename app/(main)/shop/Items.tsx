@@ -1,5 +1,6 @@
 'use client';
 import { refillHearts } from '@/actions/userProgress';
+import { createStripeUrl } from '@/actions/userSubscription';
 import { Button } from '@/components/ui/button';
 import { MAX_HEARTS, POINTS_PRICE } from '@/lib/constants';
 import Image from 'next/image';
@@ -19,6 +20,20 @@ const Items = ({ hearts, points, hasActiveSubscription }: ItemsProps) => {
       await refillHearts().catch((error) => {
         toast.error(error.message);
       });
+    });
+  };
+
+  const onUpgrade = () => {
+    startTransition(async () => {
+      await createStripeUrl()
+        .then((redirectUrl) => {
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          }
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
     });
   };
   return (
@@ -47,6 +62,17 @@ const Items = ({ hearts, points, hasActiveSubscription }: ItemsProps) => {
               <p>{POINTS_PRICE}</p>
             </div>
           )}
+        </Button>
+      </div>
+      <div className="flex items-center gap-x-4 p-4 w-full border-t-2">
+        <Image src="/icons/hearts.svg" alt="heart" width={60} height={60} />
+        <div className="flex-1">
+          <p className="text-base font-bold lg:text-xl text-neutral-700">
+            Unlimited Hearts
+          </p>
+        </div>
+        <Button variant="default" disabled={pending} onClick={onUpgrade}>
+          {hasActiveSubscription ? 'Active' : 'Upgrade'}
         </Button>
       </div>
     </ul>

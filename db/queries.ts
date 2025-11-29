@@ -1,14 +1,16 @@
 import { cache } from 'react';
 import { db } from './drizzle';
 import { auth } from '@clerk/nextjs/server';
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import {
   challengeProgress,
   courses,
   lessons,
   units,
   userProgress,
+  userSubscriptions,
 } from './schema';
+import { DAYS_IN_MS } from '@/lib/constants';
 
 export const getCourses = cache(async () => {
   try {
@@ -216,5 +218,53 @@ export const getLessonPercentage = cache(async () => {
   } catch (error) {
     console.error('Error fetching lesson percentage:', error);
     return 0;
+  }
+});
+
+export const getUserSubscription = cache(async () => {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return null;
+    }
+    const data = await db.query.userSubscriptions.findFirst({
+      where: eq(userSubscriptions.userId, userId),
+    });
+    if (!data) {
+      return null;
+    }
+    const isActive =
+      data.stripePriceId &&
+      data.stripeCurrentPeriodEnd?.getTime() + DAYS_IN_MS > Date.now();
+    return {
+      ...data,
+      isActive: !!isActive,
+    };
+  } catch (error) {
+    console.error('Error fetching user subscription:', error);
+    return null;
+  }
+});
+
+export const getTop10Users = cache(async () => {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return [];
+    }
+    const data = await db.query.userProgress.findMany({
+      orderBy: [desc(userProgress.points)],
+      limit: 10,
+      columns: {
+        userId: true,
+        userName: true,
+        userImageSrc: true,
+        points: true,
+      },
+    });
+    return data ?? [];
+  } catch (error) {
+    console.error('Error fetching top 10 users:', error);
+    return [];
   }
 });
