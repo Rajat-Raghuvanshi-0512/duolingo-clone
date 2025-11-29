@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:push": "npx drizzle-kit push",
     "db:seed": "tsx scripts/seed.ts",
+    "db:reset": "tsx scripts/reset-db.ts",
     "db:studio": "npx drizzle-kit studio",
     "db:generate": "npx drizzle-kit generate"
   },
@@ -27,7 +28,9 @@
     "lucide-react": "^0.554.0",
     "next": "16.0.3",
     "next-themes": "^0.4.6",
+    "ra-data-simple-rest": "^5.13.2",
     "react": "19.2.0",
+    "react-admin": "^5.13.2",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
     "react-dom": "19.2.0",
