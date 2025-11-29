@@ -1,0 +1,3 @@
+const POINTS_PRICE = 10;
+const MAX_HEARTS = 5;
+export { POINTS_PRICE, MAX_HEARTS };

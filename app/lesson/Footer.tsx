@@ -5,7 +5,7 @@ import React from 'react';
 import { useKey, useMedia } from 'react-use';
 
 type FooterProps = {
-  disabled: boolean;
+  disabled?: boolean;
   lessonId?: number;
   status: 'correct' | 'incorrect' | 'none' | 'completed';
   onCheck: () => void;

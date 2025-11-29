@@ -13,6 +13,7 @@ type LessonButtonProps = {
   locked?: boolean;
   current?: boolean;
   percentage: number;
+  isCompleted: boolean;
 };
 
 const LessonButton = ({
@@ -22,6 +23,7 @@ const LessonButton = ({
   locked,
   current,
   percentage,
+  isCompleted,
 }: LessonButtonProps) => {
   const cycleLength = 8;
   const cycleIndex = index % cycleLength;
@@ -41,10 +43,16 @@ const LessonButton = ({
 
   const isFirstItem = index === 0;
   const isLastItem = index === totalCount;
-  const isCompleted = !locked && percentage >= 100;
 
   const Icon = isCompleted ? Check : isLastItem ? Crown : Star;
   const href = isCompleted ? `/lesson/${id}` : `/lesson`;
+
+  console.log('percentage', percentage);
+  console.log('isCompleted', isCompleted);
+  console.log('isLastItem', isLastItem);
+  console.log('href', href);
+  console.log('locked', locked);
+  console.log('current', current);
 
   return (
     <Link

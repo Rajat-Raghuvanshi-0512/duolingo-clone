@@ -108,10 +108,51 @@ const main = async () => {
         order: 3,
         type: 'SELECT',
       },
+      {
+        id: 4,
+        question: 'Which of these is the "the man"?',
+        lessonId: 2,
+        order: 1,
+        type: 'SELECT',
+      },
+      {
+        id: 5,
+        question: 'the man',
+        lessonId: 2,
+        order: 2,
+        type: 'ASSIST',
+      },
+      {
+        id: 6,
+        question: 'Which of these is the "the milk"?',
+        lessonId: 2,
+        order: 3,
+        type: 'SELECT',
+      },
+      {
+        id: 7,
+        question: 'Which of these is the "the man"?',
+        lessonId: 3,
+        order: 1,
+        type: 'SELECT',
+      },
+      {
+        id: 8,
+        question: 'the man',
+        lessonId: 3,
+        order: 2,
+        type: 'ASSIST',
+      },
+      {
+        id: 9,
+        question: 'Which of these is the "the milk"?',
+        lessonId: 3,
+        order: 3,
+        type: 'SELECT',
+      },
     ]);
     await db.insert(schema.challengeOptions).values([
       {
-        id: 1,
         text: 'El hombre',
         correct: true,
         challengeId: 1,
@@ -119,7 +160,6 @@ const main = async () => {
         audioSrc: '/audio/spanish/the-man.mp3',
       },
       {
-        id: 2,
         text: 'La mujer',
         correct: false,
         challengeId: 1,
@@ -127,7 +167,6 @@ const main = async () => {
         audioSrc: '/audio/spanish/the-women.mp3',
       },
       {
-        id: 3,
         text: 'La leche',
         correct: false,
         challengeId: 1,
@@ -135,33 +174,28 @@ const main = async () => {
         audioSrc: '/audio/spanish/the-milk.mp3',
       },
       {
-        id: 4,
         text: 'El hombre',
         correct: true,
         challengeId: 2,
       },
       {
-        id: 5,
         text: 'La mujer',
         correct: false,
         challengeId: 2,
       },
       {
-        id: 6,
         text: 'La leche',
         correct: false,
         challengeId: 2,
       },
       {
-        id: 7,
         text: 'La leche',
         correct: true,
         challengeId: 3,
-        imageSrc: '/milk.webp',
+        imageSrc: '/boy.webp',
         audioSrc: '/audio/spanish/the-milk.mp3',
       },
       {
-        id: 8,
         text: 'El hombre',
         correct: false,
         challengeId: 3,
@@ -169,7 +203,6 @@ const main = async () => {
         audioSrc: '/audio/spanish/the-man.mp3',
       },
       {
-        id: 9,
         text: 'La mujer',
         correct: false,
         challengeId: 3,
@@ -177,6 +210,125 @@ const main = async () => {
         audioSrc: '/audio/spanish/the-women.mp3',
       },
     ]);
+    await db.insert(schema.challengeOptions).values([
+      {
+        text: 'El hombre',
+        correct: true,
+        challengeId: 4,
+        imageSrc: '/man.webp',
+        audioSrc: '/audio/spanish/the-man.mp3',
+      },
+      {
+        text: 'La mujer',
+        correct: false,
+        challengeId: 4,
+        imageSrc: '/woman.webp',
+        audioSrc: '/audio/spanish/the-women.mp3',
+      },
+      {
+        text: 'La leche',
+        correct: false,
+        challengeId: 4,
+        imageSrc: '/boy.webp',
+        audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      {
+        text: 'El hombre',
+        correct: true,
+        challengeId: 5,
+      },
+      {
+        text: 'La mujer',
+        correct: false,
+        challengeId: 5,
+      },
+      {
+        text: 'La leche',
+        correct: false,
+        challengeId: 5,
+      },
+      {
+        text: 'La leche',
+        correct: true,
+        challengeId: 6,
+        imageSrc: '/boy.webp',
+        audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      {
+        text: 'El hombre',
+        correct: false,
+        challengeId: 6,
+        imageSrc: '/man.webp',
+        audioSrc: '/audio/spanish/the-man.mp3',
+      },
+      {
+        text: 'La mujer',
+        correct: false,
+        challengeId: 6,
+        imageSrc: '/woman.webp',
+        audioSrc: '/audio/spanish/the-women.mp3',
+      },
+    ]);
+    await db.insert(schema.challengeOptions).values([
+      {
+        text: 'El hombre',
+        correct: true,
+        challengeId: 7,
+        imageSrc: '/man.webp',
+        audioSrc: '/audio/spanish/the-man.mp3',
+      },
+      {
+        text: 'La mujer',
+        correct: false,
+        challengeId: 7,
+        imageSrc: '/woman.webp',
+        audioSrc: '/audio/spanish/the-women.mp3',
+      },
+      {
+        text: 'La leche',
+        correct: false,
+        challengeId: 7,
+        imageSrc: '/boy.webp',
+        audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      {
+        text: 'El hombre',
+        correct: true,
+        challengeId: 8,
+      },
+      {
+        text: 'La mujer',
+        correct: false,
+        challengeId: 8,
+      },
+      {
+        text: 'La leche',
+        correct: false,
+        challengeId: 8,
+      },
+      {
+        text: 'La leche',
+        correct: true,
+        challengeId: 9,
+        imageSrc: '/boy.webp',
+        audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      {
+        text: 'El hombre',
+        correct: false,
+        challengeId: 9,
+        imageSrc: '/man.webp',
+        audioSrc: '/audio/spanish/the-man.mp3',
+      },
+      {
+        text: 'La mujer',
+        correct: false,
+        challengeId: 9,
+        imageSrc: '/woman.webp',
+        audioSrc: '/audio/spanish/the-women.mp3',
+      },
+    ]);
+
     console.log('DB seeded');
   } catch (error) {
     console.error(error);

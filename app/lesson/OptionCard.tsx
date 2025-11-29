@@ -30,7 +30,8 @@ const OptionCard = ({
   onClick,
   disabled,
 }: OptionCardProps) => {
-  const [audio, _, controls, ref] = useAudio({ src: audioSrc ?? '' });
+  // @ts-expect-error - audioSrc is nullable
+  const [audio, _, controls, ref] = useAudio({ src: audioSrc ?? null });
 
   const handleClick = useCallback(() => {
     if (disabled) return;

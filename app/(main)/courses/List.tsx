@@ -23,7 +23,19 @@ const List = ({ courses, activeCourseId }: ListProps) => {
       return;
     }
     startTransition(async () => {
-      await upsertUserProgress(id).catch(() => {
+      await upsertUserProgress(id).catch((err) => {
+        // Next.js redirect() throws a special error that should not be caught
+        // Check if it's a redirect error by checking the digest or message
+        const isRedirectError =
+          err?.digest?.includes('NEXT_REDIRECT') ||
+          err?.message?.includes('NEXT_REDIRECT') ||
+          err?.name === 'RedirectError';
+
+        if (isRedirectError) {
+          // This is expected behavior, don't show error toast
+          return;
+        }
+        console.error(err);
         toast.error('Something went wrong');
       });
     });

@@ -31,9 +31,10 @@ export const updateChallengeProgress = async (challengeId: number) => {
       eq(challengeProgress.challengeId, challengeId)
     ),
   });
+  console.log('existingLessonProgress', existingLessonProgress);
   const isPractice = !!existingLessonProgress;
   if (currentUserProgress.hearts === 0 && !isPractice) {
-    throw new Error('No hearts left');
+    return { error: 'hearts' };
   }
   if (isPractice) {
     await db
@@ -68,7 +69,6 @@ export const updateChallengeProgress = async (challengeId: number) => {
   await db
     .update(userProgress)
     .set({
-      hearts: Math.min(currentUserProgress.hearts - 1, 5),
       points: currentUserProgress.points + 10,
     })
     .where(eq(userProgress.userId, userId));

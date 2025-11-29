@@ -36,13 +36,13 @@ const UnitCard = ({
           return (
             <div key={lesson.id}>
               <LessonButton
-                key={lesson.id}
                 id={lesson.id}
                 index={index}
                 totalCount={lessons.length - 1}
                 locked={isLocked}
                 current={isCurrentLesson}
                 percentage={activeLessonPercentage}
+                isCompleted={lesson.completed}
               />
             </div>
           );
