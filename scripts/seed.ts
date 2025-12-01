@@ -10,328 +10,1690 @@ const db = drizzle(sql, { schema });
 
 const main = async () => {
   try {
-    console.log('Seeding DB');
-    await db.delete(schema.courses);
-    await db.delete(schema.userProgress);
-    await db.delete(schema.units);
-    await db.delete(schema.lessons);
-    await db.delete(schema.challenges);
-    await db.delete(schema.challengeOptions);
+    console.log('Seeding DB...');
+
+    // Clear existing data
     await db.delete(schema.challengeProgress);
-    await db.insert(schema.courses).values([
-      {
-        id: 1,
+    await db.delete(schema.challengeOptions);
+    await db.delete(schema.challenges);
+    await db.delete(schema.lessons);
+    await db.delete(schema.units);
+    await db.delete(schema.userProgress);
+    await db.delete(schema.courses);
+
+    console.log('Creating Spanish course...');
+    const [spanishCourse] = await db
+      .insert(schema.courses)
+      .values({
         title: 'Spanish',
         imageSrc: '/flags/ES.svg',
-      },
-      {
-        id: 2,
-        title: 'French',
-        imageSrc: '/flags/FR.svg',
-      },
-      {
-        id: 3,
-        title: 'Japanese',
-        imageSrc: '/flags/JP.svg',
-      },
-      {
-        id: 4,
-        title: 'Hindi',
-        imageSrc: '/flags/IN.svg',
-      },
-      {
-        id: 5,
-        title: 'English',
-        imageSrc: '/flags/US.svg',
-      },
-    ]);
-    await db.insert(schema.units).values([
-      {
-        id: 1,
-        title: 'Unit 1',
-        description: 'Unit 1 description',
-        courseId: 1, // Spanish
+      })
+      .returning();
+
+    // Spanish Unit 1: Basics
+    const [spanishUnit1] = await db
+      .insert(schema.units)
+      .values({
+        courseId: spanishCourse.id,
+        title: 'Unit 1: Basics',
+        description: 'Learn the fundamentals of Spanish',
         order: 1,
-      },
-    ]);
-    await db.insert(schema.lessons).values([
-      {
-        id: 1,
-        title: 'Lesson 1',
-        unitId: 1,
+      })
+      .returning();
+
+    // Spanish Unit 1 - Lesson 1: Greetings
+    const [spanishLesson1] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit1.id,
+        title: 'Greetings',
         order: 1,
-      },
-      {
-        id: 2,
-        title: 'Lesson 2',
-        unitId: 1,
+      })
+      .returning();
+
+    // Challenge 1: SELECT - Choose the correct greeting
+    const [spanishChallenge1] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson1.id,
+        type: 'SELECT',
+        question: 'Which word means "hello" in Spanish?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge1.id, text: 'Hola', correct: true },
+      { challengeId: spanishChallenge1.id, text: 'Adiós', correct: false },
+      { challengeId: spanishChallenge1.id, text: 'Gracias', correct: false },
+      { challengeId: spanishChallenge1.id, text: 'Por favor', correct: false },
+    ]);
+
+    // Challenge 2: ASSIST - Translate to Spanish
+    const [spanishChallenge2] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson1.id,
+        type: 'ASSIST',
+        question: 'Translate "Good morning" to Spanish',
         order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge2.id, text: 'Buenos días', correct: true },
+      {
+        challengeId: spanishChallenge2.id,
+        text: 'Buenas noches',
+        correct: false,
       },
       {
-        id: 3,
-        title: 'Lesson 3',
-        unitId: 1,
+        challengeId: spanishChallenge2.id,
+        text: 'Buenas tardes',
+        correct: false,
+      },
+      { challengeId: spanishChallenge2.id, text: 'Buen día', correct: false },
+    ]);
+
+    // Challenge 3: SELECT - Choose the correct response
+    const [spanishChallenge3] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson1.id,
+        type: 'SELECT',
+        question: 'How do you say "How are you?" in Spanish?',
         order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: spanishChallenge3.id,
+        text: '¿Cómo estás?',
+        correct: true,
+      },
+      { challengeId: spanishChallenge3.id, text: '¿Qué tal?', correct: false },
+      {
+        challengeId: spanishChallenge3.id,
+        text: '¿Cómo te llamas?',
+        correct: false,
       },
       {
-        id: 4,
-        title: 'Lesson 4',
-        unitId: 1,
+        challengeId: spanishChallenge3.id,
+        text: '¿Dónde vives?',
+        correct: false,
+      },
+    ]);
+
+    // Challenge 4: ASSIST - Audio challenge
+    const [spanishChallenge4] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson1.id,
+        type: 'ASSIST',
+        question: 'Listen and select the correct word',
         order: 4,
-      },
-      {
-        id: 5,
-        title: 'Lesson 5',
-        unitId: 1,
-        order: 5,
-      },
-    ]);
-    await db.insert(schema.challenges).values([
-      {
-        id: 1,
-        question: 'Which of these is the "the man"?',
-        lessonId: 1,
-        order: 1,
-        type: 'SELECT',
-      },
-      {
-        id: 2,
-        question: 'the man',
-        lessonId: 1,
-        order: 2,
-        type: 'ASSIST',
-      },
-      {
-        id: 3,
-        question: 'Which of these is the "the milk"?',
-        lessonId: 1,
-        order: 3,
-        type: 'SELECT',
-      },
-      {
-        id: 4,
-        question: 'Which of these is the "the man"?',
-        lessonId: 2,
-        order: 1,
-        type: 'SELECT',
-      },
-      {
-        id: 5,
-        question: 'the man',
-        lessonId: 2,
-        order: 2,
-        type: 'ASSIST',
-      },
-      {
-        id: 6,
-        question: 'Which of these is the "the milk"?',
-        lessonId: 2,
-        order: 3,
-        type: 'SELECT',
-      },
-      {
-        id: 7,
-        question: 'Which of these is the "the man"?',
-        lessonId: 3,
-        order: 1,
-        type: 'SELECT',
-      },
-      {
-        id: 8,
-        question: 'the man',
-        lessonId: 3,
-        order: 2,
-        type: 'ASSIST',
-      },
-      {
-        id: 9,
-        question: 'Which of these is the "the milk"?',
-        lessonId: 3,
-        order: 3,
-        type: 'SELECT',
-      },
-    ]);
+      })
+      .returning();
+
     await db.insert(schema.challengeOptions).values([
       {
-        text: 'El hombre',
+        challengeId: spanishChallenge4.id,
+        text: 'Hola',
         correct: true,
-        challengeId: 1,
-        imageSrc: '/man.webp',
         audioSrc: '/audio/spanish/the-man.mp3',
       },
       {
-        text: 'La mujer',
+        challengeId: spanishChallenge4.id,
+        text: 'Adiós',
         correct: false,
-        challengeId: 1,
-        imageSrc: '/woman.webp',
-        audioSrc: '/audio/spanish/the-women.mp3',
-      },
-      {
-        text: 'La leche',
-        correct: false,
-        challengeId: 1,
-        imageSrc: '/boy.webp',
         audioSrc: '/audio/spanish/the-milk.mp3',
       },
       {
-        text: 'El hombre',
-        correct: true,
-        challengeId: 2,
-      },
-      {
-        text: 'La mujer',
+        challengeId: spanishChallenge4.id,
+        text: 'Gracias',
         correct: false,
-        challengeId: 2,
-      },
-      {
-        text: 'La leche',
-        correct: false,
-        challengeId: 2,
-      },
-      {
-        text: 'La leche',
-        correct: true,
-        challengeId: 3,
-        imageSrc: '/boy.webp',
-        audioSrc: '/audio/spanish/the-milk.mp3',
-      },
-      {
-        text: 'El hombre',
-        correct: false,
-        challengeId: 3,
-        imageSrc: '/man.webp',
-        audioSrc: '/audio/spanish/the-man.mp3',
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 3,
-        imageSrc: '/woman.webp',
-        audioSrc: '/audio/spanish/the-women.mp3',
-      },
-    ]);
-    await db.insert(schema.challengeOptions).values([
-      {
-        text: 'El hombre',
-        correct: true,
-        challengeId: 4,
-        imageSrc: '/man.webp',
-        audioSrc: '/audio/spanish/the-man.mp3',
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 4,
-        imageSrc: '/woman.webp',
-        audioSrc: '/audio/spanish/the-women.mp3',
-      },
-      {
-        text: 'La leche',
-        correct: false,
-        challengeId: 4,
-        imageSrc: '/boy.webp',
-        audioSrc: '/audio/spanish/the-milk.mp3',
-      },
-      {
-        text: 'El hombre',
-        correct: true,
-        challengeId: 5,
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 5,
-      },
-      {
-        text: 'La leche',
-        correct: false,
-        challengeId: 5,
-      },
-      {
-        text: 'La leche',
-        correct: true,
-        challengeId: 6,
-        imageSrc: '/boy.webp',
-        audioSrc: '/audio/spanish/the-milk.mp3',
-      },
-      {
-        text: 'El hombre',
-        correct: false,
-        challengeId: 6,
-        imageSrc: '/man.webp',
-        audioSrc: '/audio/spanish/the-man.mp3',
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 6,
-        imageSrc: '/woman.webp',
-        audioSrc: '/audio/spanish/the-women.mp3',
-      },
-    ]);
-    await db.insert(schema.challengeOptions).values([
-      {
-        text: 'El hombre',
-        correct: true,
-        challengeId: 7,
-        imageSrc: '/man.webp',
-        audioSrc: '/audio/spanish/the-man.mp3',
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 7,
-        imageSrc: '/woman.webp',
-        audioSrc: '/audio/spanish/the-women.mp3',
-      },
-      {
-        text: 'La leche',
-        correct: false,
-        challengeId: 7,
-        imageSrc: '/boy.webp',
-        audioSrc: '/audio/spanish/the-milk.mp3',
-      },
-      {
-        text: 'El hombre',
-        correct: true,
-        challengeId: 8,
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 8,
-      },
-      {
-        text: 'La leche',
-        correct: false,
-        challengeId: 8,
-      },
-      {
-        text: 'La leche',
-        correct: true,
-        challengeId: 9,
-        imageSrc: '/boy.webp',
-        audioSrc: '/audio/spanish/the-milk.mp3',
-      },
-      {
-        text: 'El hombre',
-        correct: false,
-        challengeId: 9,
-        imageSrc: '/man.webp',
-        audioSrc: '/audio/spanish/the-man.mp3',
-      },
-      {
-        text: 'La mujer',
-        correct: false,
-        challengeId: 9,
-        imageSrc: '/woman.webp',
         audioSrc: '/audio/spanish/the-women.mp3',
       },
     ]);
 
-    console.log('DB seeded');
+    // Challenge 5: SELECT - Image challenge
+    const [spanishChallenge5] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson1.id,
+        type: 'SELECT',
+        question: 'Select the correct greeting for this situation',
+        order: 5,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: spanishChallenge5.id,
+        text: 'Buenas noches',
+        correct: true,
+        imageSrc: '/man.webp',
+      },
+      {
+        challengeId: spanishChallenge5.id,
+        text: 'Buenos días',
+        correct: false,
+        imageSrc: '/woman.webp',
+      },
+      {
+        challengeId: spanishChallenge5.id,
+        text: 'Buenas tardes',
+        correct: false,
+        imageSrc: '/boy.webp',
+      },
+    ]);
+
+    // Spanish Unit 1 - Lesson 2: Common Phrases
+    const [spanishLesson2] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit1.id,
+        title: 'Common Phrases',
+        order: 2,
+      })
+      .returning();
+
+    const [spanishChallenge6] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson2.id,
+        type: 'SELECT',
+        question: 'What does "Por favor" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge6.id, text: 'Please', correct: true },
+      { challengeId: spanishChallenge6.id, text: 'Thank you', correct: false },
+      {
+        challengeId: spanishChallenge6.id,
+        text: "You're welcome",
+        correct: false,
+      },
+      { challengeId: spanishChallenge6.id, text: 'Excuse me', correct: false },
+    ]);
+
+    const [spanishChallenge7] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson2.id,
+        type: 'ASSIST',
+        question: 'Translate "Thank you" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge7.id, text: 'Gracias', correct: true },
+      { challengeId: spanishChallenge7.id, text: 'Por favor', correct: false },
+      { challengeId: spanishChallenge7.id, text: 'De nada', correct: false },
+      { challengeId: spanishChallenge7.id, text: 'Perdón', correct: false },
+    ]);
+
+    const [spanishChallenge8] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson2.id,
+        type: 'SELECT',
+        question: 'How do you say "You\'re welcome" in Spanish?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge8.id, text: 'De nada', correct: true },
+      { challengeId: spanishChallenge8.id, text: 'Gracias', correct: false },
+      { challengeId: spanishChallenge8.id, text: 'Por favor', correct: false },
+      { challengeId: spanishChallenge8.id, text: 'Lo siento', correct: false },
+    ]);
+
+    const [spanishChallenge9] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson2.id,
+        type: 'ASSIST',
+        question: 'What does "Lo siento" mean?',
+        order: 4,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge9.id, text: "I'm sorry", correct: true },
+      { challengeId: spanishChallenge9.id, text: 'Thank you', correct: false },
+      { challengeId: spanishChallenge9.id, text: 'Please', correct: false },
+      { challengeId: spanishChallenge9.id, text: 'Excuse me', correct: false },
+    ]);
+
+    // Spanish Unit 1 - Lesson 3: Numbers
+    const [spanishLesson3] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit1.id,
+        title: 'Numbers 1-10',
+        order: 3,
+      })
+      .returning();
+
+    const [spanishChallenge10] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson3.id,
+        type: 'SELECT',
+        question: 'What is "uno" in English?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge10.id, text: 'One', correct: true },
+      { challengeId: spanishChallenge10.id, text: 'Two', correct: false },
+      { challengeId: spanishChallenge10.id, text: 'Three', correct: false },
+      { challengeId: spanishChallenge10.id, text: 'Four', correct: false },
+    ]);
+
+    const [spanishChallenge11] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson3.id,
+        type: 'ASSIST',
+        question: 'Translate "five" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge11.id, text: 'Cinco', correct: true },
+      { challengeId: spanishChallenge11.id, text: 'Cuatro', correct: false },
+      { challengeId: spanishChallenge11.id, text: 'Seis', correct: false },
+      { challengeId: spanishChallenge11.id, text: 'Siete', correct: false },
+    ]);
+
+    // Spanish Unit 2: People & Family
+    const [spanishUnit2] = await db
+      .insert(schema.units)
+      .values({
+        courseId: spanishCourse.id,
+        title: 'Unit 2: People & Family',
+        description: 'Learn to talk about people and family',
+        order: 2,
+      })
+      .returning();
+
+    const [spanishLesson4] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit2.id,
+        title: 'Family Members',
+        order: 1,
+      })
+      .returning();
+
+    const [spanishChallenge12] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson4.id,
+        type: 'SELECT',
+        question: 'What does "madre" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge12.id, text: 'Mother', correct: true },
+      { challengeId: spanishChallenge12.id, text: 'Father', correct: false },
+      { challengeId: spanishChallenge12.id, text: 'Sister', correct: false },
+      { challengeId: spanishChallenge12.id, text: 'Brother', correct: false },
+    ]);
+
+    const [spanishChallenge13] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson4.id,
+        type: 'ASSIST',
+        question: 'Translate "father" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge13.id, text: 'Padre', correct: true },
+      { challengeId: spanishChallenge13.id, text: 'Madre', correct: false },
+      { challengeId: spanishChallenge13.id, text: 'Hermano', correct: false },
+      { challengeId: spanishChallenge13.id, text: 'Hermana', correct: false },
+    ]);
+
+    const [spanishChallenge14] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson4.id,
+        type: 'SELECT',
+        question: 'What is "hermana" in English?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge14.id, text: 'Sister', correct: true },
+      { challengeId: spanishChallenge14.id, text: 'Brother', correct: false },
+      { challengeId: spanishChallenge14.id, text: 'Mother', correct: false },
+      { challengeId: spanishChallenge14.id, text: 'Father', correct: false },
+    ]);
+
+    // Spanish Unit 3: Food & Drink
+    const [spanishUnit3] = await db
+      .insert(schema.units)
+      .values({
+        courseId: spanishCourse.id,
+        title: 'Unit 3: Food & Drink',
+        description: 'Learn about food and beverages',
+        order: 3,
+      })
+      .returning();
+
+    const [spanishLesson5] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit3.id,
+        title: 'Basic Foods',
+        order: 1,
+      })
+      .returning();
+
+    const [spanishChallenge15] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson5.id,
+        type: 'SELECT',
+        question: 'What does "pan" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge15.id, text: 'Bread', correct: true },
+      { challengeId: spanishChallenge15.id, text: 'Water', correct: false },
+      { challengeId: spanishChallenge15.id, text: 'Milk', correct: false },
+      { challengeId: spanishChallenge15.id, text: 'Cheese', correct: false },
+    ]);
+
+    const [spanishChallenge16] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson5.id,
+        type: 'ASSIST',
+        question: 'Translate "water" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge16.id, text: 'Agua', correct: true },
+      { challengeId: spanishChallenge16.id, text: 'Leche', correct: false },
+      { challengeId: spanishChallenge16.id, text: 'Pan', correct: false },
+      { challengeId: spanishChallenge16.id, text: 'Queso', correct: false },
+    ]);
+
+    const [spanishChallenge17] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson5.id,
+        type: 'SELECT',
+        question: 'What is "leche" in English?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: spanishChallenge17.id,
+        text: 'Milk',
+        correct: true,
+        audioSrc: '/audio/spanish/the-milk.mp3',
+      },
+      { challengeId: spanishChallenge17.id, text: 'Water', correct: false },
+      { challengeId: spanishChallenge17.id, text: 'Bread', correct: false },
+      { challengeId: spanishChallenge17.id, text: 'Cheese', correct: false },
+    ]);
+
+    // Spanish Unit 4: Travel
+    const [spanishUnit4] = await db
+      .insert(schema.units)
+      .values({
+        courseId: spanishCourse.id,
+        title: 'Unit 4: Travel',
+        description: 'Essential phrases for traveling',
+        order: 4,
+      })
+      .returning();
+
+    const [spanishLesson6] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit4.id,
+        title: 'Directions',
+        order: 1,
+      })
+      .returning();
+
+    const [spanishChallenge18] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson6.id,
+        type: 'SELECT',
+        question: 'What does "derecha" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge18.id, text: 'Right', correct: true },
+      { challengeId: spanishChallenge18.id, text: 'Left', correct: false },
+      { challengeId: spanishChallenge18.id, text: 'Straight', correct: false },
+      { challengeId: spanishChallenge18.id, text: 'Back', correct: false },
+    ]);
+
+    const [spanishChallenge19] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson6.id,
+        type: 'ASSIST',
+        question: 'Translate "left" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge19.id, text: 'Izquierda', correct: true },
+      { challengeId: spanishChallenge19.id, text: 'Derecha', correct: false },
+      { challengeId: spanishChallenge19.id, text: 'Recto', correct: false },
+      { challengeId: spanishChallenge19.id, text: 'Atrás', correct: false },
+    ]);
+
+    // Spanish Unit 5: Colors & Descriptions
+    const [spanishUnit5] = await db
+      .insert(schema.units)
+      .values({
+        courseId: spanishCourse.id,
+        title: 'Unit 5: Colors & Descriptions',
+        description: 'Learn colors and describing things',
+        order: 5,
+      })
+      .returning();
+
+    const [spanishLesson7] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit5.id,
+        title: 'Colors',
+        order: 1,
+      })
+      .returning();
+
+    const [spanishChallenge20] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson7.id,
+        type: 'SELECT',
+        question: 'What does "rojo" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge20.id, text: 'Red', correct: true },
+      { challengeId: spanishChallenge20.id, text: 'Blue', correct: false },
+      { challengeId: spanishChallenge20.id, text: 'Green', correct: false },
+      { challengeId: spanishChallenge20.id, text: 'Yellow', correct: false },
+    ]);
+
+    const [spanishChallenge21] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson7.id,
+        type: 'ASSIST',
+        question: 'Translate "blue" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge21.id, text: 'Azul', correct: true },
+      { challengeId: spanishChallenge21.id, text: 'Rojo', correct: false },
+      { challengeId: spanishChallenge21.id, text: 'Verde', correct: false },
+      { challengeId: spanishChallenge21.id, text: 'Amarillo', correct: false },
+    ]);
+
+    // Add more lessons to Spanish units
+    const [spanishLesson8] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit2.id,
+        title: 'Describing People',
+        order: 2,
+      })
+      .returning();
+
+    const [spanishChallenge22] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson8.id,
+        type: 'SELECT',
+        question: 'What does "alto" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge22.id, text: 'Tall', correct: true },
+      { challengeId: spanishChallenge22.id, text: 'Short', correct: false },
+      { challengeId: spanishChallenge22.id, text: 'Big', correct: false },
+      { challengeId: spanishChallenge22.id, text: 'Small', correct: false },
+    ]);
+
+    const [spanishChallenge22b] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson8.id,
+        type: 'ASSIST',
+        question: 'Translate "short" to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge22b.id, text: 'Bajo', correct: true },
+      { challengeId: spanishChallenge22b.id, text: 'Alto', correct: false },
+      { challengeId: spanishChallenge22b.id, text: 'Grande', correct: false },
+      { challengeId: spanishChallenge22b.id, text: 'Pequeño', correct: false },
+    ]);
+
+    const [spanishLesson9] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit3.id,
+        title: 'At the Restaurant',
+        order: 2,
+      })
+      .returning();
+
+    const [spanishChallenge23] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson9.id,
+        type: 'ASSIST',
+        question: 'How do you say "I would like" in Spanish?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge23.id, text: 'Quisiera', correct: true },
+      { challengeId: spanishChallenge23.id, text: 'Quiero', correct: false },
+      { challengeId: spanishChallenge23.id, text: 'Necesito', correct: false },
+      { challengeId: spanishChallenge23.id, text: 'Tengo', correct: false },
+    ]);
+
+    const [spanishChallenge23b] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson9.id,
+        type: 'SELECT',
+        question: 'What does "la cuenta" mean?',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge23b.id, text: 'The bill', correct: true },
+      { challengeId: spanishChallenge23b.id, text: 'The menu', correct: false },
+      {
+        challengeId: spanishChallenge23b.id,
+        text: 'The table',
+        correct: false,
+      },
+      {
+        challengeId: spanishChallenge23b.id,
+        text: 'The waiter',
+        correct: false,
+      },
+    ]);
+
+    // ========== FRENCH COURSE ==========
+    console.log('Creating French course...');
+    const [frenchCourse] = await db
+      .insert(schema.courses)
+      .values({
+        title: 'French',
+        imageSrc: '/flags/FR.svg',
+      })
+      .returning();
+
+    // French Unit 1: Basics
+    const [frenchUnit1] = await db
+      .insert(schema.units)
+      .values({
+        courseId: frenchCourse.id,
+        title: 'Unit 1: Basics',
+        description: 'Learn the fundamentals of French',
+        order: 1,
+      })
+      .returning();
+
+    // French Unit 1 - Lesson 1: Greetings
+    const [frenchLesson1] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit1.id,
+        title: 'Greetings',
+        order: 1,
+      })
+      .returning();
+
+    const [frenchChallenge1] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson1.id,
+        type: 'SELECT',
+        question: 'Which word means "hello" in French?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge1.id, text: 'Bonjour', correct: true },
+      { challengeId: frenchChallenge1.id, text: 'Au revoir', correct: false },
+      { challengeId: frenchChallenge1.id, text: 'Merci', correct: false },
+      {
+        challengeId: frenchChallenge1.id,
+        text: "S'il vous plaît",
+        correct: false,
+      },
+    ]);
+
+    const [frenchChallenge2] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson1.id,
+        type: 'ASSIST',
+        question: 'Translate "Good evening" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge2.id, text: 'Bonsoir', correct: true },
+      { challengeId: frenchChallenge2.id, text: 'Bonjour', correct: false },
+      { challengeId: frenchChallenge2.id, text: 'Bonne nuit', correct: false },
+      {
+        challengeId: frenchChallenge2.id,
+        text: 'Bon après-midi',
+        correct: false,
+      },
+    ]);
+
+    const [frenchChallenge3] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson1.id,
+        type: 'SELECT',
+        question: 'How do you say "How are you?" in French?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: frenchChallenge3.id,
+        text: 'Comment allez-vous?',
+        correct: true,
+      },
+      {
+        challengeId: frenchChallenge3.id,
+        text: 'Comment ça va?',
+        correct: false,
+      },
+      {
+        challengeId: frenchChallenge3.id,
+        text: 'Quel est votre nom?',
+        correct: false,
+      },
+      {
+        challengeId: frenchChallenge3.id,
+        text: 'Où habitez-vous?',
+        correct: false,
+      },
+    ]);
+
+    const [frenchChallenge4] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson1.id,
+        type: 'ASSIST',
+        question: 'What does "Salut" mean?',
+        order: 4,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge4.id, text: 'Hi / Bye', correct: true },
+      { challengeId: frenchChallenge4.id, text: 'Hello', correct: false },
+      { challengeId: frenchChallenge4.id, text: 'Thank you', correct: false },
+      { challengeId: frenchChallenge4.id, text: 'Please', correct: false },
+    ]);
+
+    // French Unit 1 - Lesson 2: Common Phrases
+    const [frenchLesson2] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit1.id,
+        title: 'Common Phrases',
+        order: 2,
+      })
+      .returning();
+
+    const [frenchChallenge5] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson2.id,
+        type: 'SELECT',
+        question: 'What does "S\'il vous plaît" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge5.id, text: 'Please', correct: true },
+      { challengeId: frenchChallenge5.id, text: 'Thank you', correct: false },
+      {
+        challengeId: frenchChallenge5.id,
+        text: "You're welcome",
+        correct: false,
+      },
+      { challengeId: frenchChallenge5.id, text: 'Excuse me', correct: false },
+    ]);
+
+    const [frenchChallenge6] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson2.id,
+        type: 'ASSIST',
+        question: 'Translate "Thank you" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge6.id, text: 'Merci', correct: true },
+      {
+        challengeId: frenchChallenge6.id,
+        text: "S'il vous plaît",
+        correct: false,
+      },
+      { challengeId: frenchChallenge6.id, text: 'De rien', correct: false },
+      { challengeId: frenchChallenge6.id, text: 'Pardon', correct: false },
+    ]);
+
+    const [frenchChallenge7] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson2.id,
+        type: 'SELECT',
+        question: 'How do you say "You\'re welcome" in French?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge7.id, text: 'De rien', correct: true },
+      { challengeId: frenchChallenge7.id, text: 'Merci', correct: false },
+      {
+        challengeId: frenchChallenge7.id,
+        text: "S'il vous plaît",
+        correct: false,
+      },
+      {
+        challengeId: frenchChallenge7.id,
+        text: 'Je suis désolé',
+        correct: false,
+      },
+    ]);
+
+    // French Unit 1 - Lesson 3: Numbers
+    const [frenchLesson3] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit1.id,
+        title: 'Numbers 1-10',
+        order: 3,
+      })
+      .returning();
+
+    const [frenchChallenge8] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson3.id,
+        type: 'SELECT',
+        question: 'What is "un" in English?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge8.id, text: 'One', correct: true },
+      { challengeId: frenchChallenge8.id, text: 'Two', correct: false },
+      { challengeId: frenchChallenge8.id, text: 'Three', correct: false },
+      { challengeId: frenchChallenge8.id, text: 'Four', correct: false },
+    ]);
+
+    const [frenchChallenge9] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson3.id,
+        type: 'ASSIST',
+        question: 'Translate "five" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge9.id, text: 'Cinq', correct: true },
+      { challengeId: frenchChallenge9.id, text: 'Quatre', correct: false },
+      { challengeId: frenchChallenge9.id, text: 'Six', correct: false },
+      { challengeId: frenchChallenge9.id, text: 'Sept', correct: false },
+    ]);
+
+    // French Unit 2: People & Family
+    const [frenchUnit2] = await db
+      .insert(schema.units)
+      .values({
+        courseId: frenchCourse.id,
+        title: 'Unit 2: People & Family',
+        description: 'Learn to talk about people and family',
+        order: 2,
+      })
+      .returning();
+
+    const [frenchLesson4] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit2.id,
+        title: 'Family Members',
+        order: 1,
+      })
+      .returning();
+
+    const [frenchChallenge10] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson4.id,
+        type: 'SELECT',
+        question: 'What does "mère" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge10.id, text: 'Mother', correct: true },
+      { challengeId: frenchChallenge10.id, text: 'Father', correct: false },
+      { challengeId: frenchChallenge10.id, text: 'Sister', correct: false },
+      { challengeId: frenchChallenge10.id, text: 'Brother', correct: false },
+    ]);
+
+    const [frenchChallenge11] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson4.id,
+        type: 'ASSIST',
+        question: 'Translate "father" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge11.id, text: 'Père', correct: true },
+      { challengeId: frenchChallenge11.id, text: 'Mère', correct: false },
+      { challengeId: frenchChallenge11.id, text: 'Frère', correct: false },
+      { challengeId: frenchChallenge11.id, text: 'Sœur', correct: false },
+    ]);
+
+    const [frenchChallenge12] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson4.id,
+        type: 'SELECT',
+        question: 'What is "sœur" in English?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge12.id, text: 'Sister', correct: true },
+      { challengeId: frenchChallenge12.id, text: 'Brother', correct: false },
+      { challengeId: frenchChallenge12.id, text: 'Mother', correct: false },
+      { challengeId: frenchChallenge12.id, text: 'Father', correct: false },
+    ]);
+
+    // French Unit 3: Food & Drink
+    const [frenchUnit3] = await db
+      .insert(schema.units)
+      .values({
+        courseId: frenchCourse.id,
+        title: 'Unit 3: Food & Drink',
+        description: 'Learn about food and beverages',
+        order: 3,
+      })
+      .returning();
+
+    const [frenchLesson5] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit3.id,
+        title: 'Basic Foods',
+        order: 1,
+      })
+      .returning();
+
+    const [frenchChallenge13] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson5.id,
+        type: 'SELECT',
+        question: 'What does "pain" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge13.id, text: 'Bread', correct: true },
+      { challengeId: frenchChallenge13.id, text: 'Water', correct: false },
+      { challengeId: frenchChallenge13.id, text: 'Milk', correct: false },
+      { challengeId: frenchChallenge13.id, text: 'Cheese', correct: false },
+    ]);
+
+    const [frenchChallenge14] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson5.id,
+        type: 'ASSIST',
+        question: 'Translate "water" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge14.id, text: 'Eau', correct: true },
+      { challengeId: frenchChallenge14.id, text: 'Lait', correct: false },
+      { challengeId: frenchChallenge14.id, text: 'Pain', correct: false },
+      { challengeId: frenchChallenge14.id, text: 'Fromage', correct: false },
+    ]);
+
+    const [frenchChallenge15] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson5.id,
+        type: 'SELECT',
+        question: 'What is "lait" in English?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge15.id, text: 'Milk', correct: true },
+      { challengeId: frenchChallenge15.id, text: 'Water', correct: false },
+      { challengeId: frenchChallenge15.id, text: 'Bread', correct: false },
+      { challengeId: frenchChallenge15.id, text: 'Cheese', correct: false },
+    ]);
+
+    // French Unit 4: Travel
+    const [frenchUnit4] = await db
+      .insert(schema.units)
+      .values({
+        courseId: frenchCourse.id,
+        title: 'Unit 4: Travel',
+        description: 'Essential phrases for traveling',
+        order: 4,
+      })
+      .returning();
+
+    const [frenchLesson6] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit4.id,
+        title: 'Directions',
+        order: 1,
+      })
+      .returning();
+
+    const [frenchChallenge16] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson6.id,
+        type: 'SELECT',
+        question: 'What does "droite" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge16.id, text: 'Right', correct: true },
+      { challengeId: frenchChallenge16.id, text: 'Left', correct: false },
+      { challengeId: frenchChallenge16.id, text: 'Straight', correct: false },
+      { challengeId: frenchChallenge16.id, text: 'Back', correct: false },
+    ]);
+
+    const [frenchChallenge17] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson6.id,
+        type: 'ASSIST',
+        question: 'Translate "left" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge17.id, text: 'Gauche', correct: true },
+      { challengeId: frenchChallenge17.id, text: 'Droite', correct: false },
+      { challengeId: frenchChallenge17.id, text: 'Tout droit', correct: false },
+      { challengeId: frenchChallenge17.id, text: 'En arrière', correct: false },
+    ]);
+
+    // French Unit 5: Colors & Descriptions
+    const [frenchUnit5] = await db
+      .insert(schema.units)
+      .values({
+        courseId: frenchCourse.id,
+        title: 'Unit 5: Colors & Descriptions',
+        description: 'Learn colors and describing things',
+        order: 5,
+      })
+      .returning();
+
+    const [frenchLesson7] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit5.id,
+        title: 'Colors',
+        order: 1,
+      })
+      .returning();
+
+    const [frenchChallenge18] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson7.id,
+        type: 'SELECT',
+        question: 'What does "rouge" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge18.id, text: 'Red', correct: true },
+      { challengeId: frenchChallenge18.id, text: 'Blue', correct: false },
+      { challengeId: frenchChallenge18.id, text: 'Green', correct: false },
+      { challengeId: frenchChallenge18.id, text: 'Yellow', correct: false },
+    ]);
+
+    const [frenchChallenge19] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson7.id,
+        type: 'ASSIST',
+        question: 'Translate "blue" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge19.id, text: 'Bleu', correct: true },
+      { challengeId: frenchChallenge19.id, text: 'Rouge', correct: false },
+      { challengeId: frenchChallenge19.id, text: 'Vert', correct: false },
+      { challengeId: frenchChallenge19.id, text: 'Jaune', correct: false },
+    ]);
+
+    // Add more lessons to French units
+    const [frenchLesson8] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit2.id,
+        title: 'Describing People',
+        order: 2,
+      })
+      .returning();
+
+    const [frenchChallenge20] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson8.id,
+        type: 'SELECT',
+        question: 'What does "grand" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge20.id, text: 'Tall / Big', correct: true },
+      {
+        challengeId: frenchChallenge20.id,
+        text: 'Short / Small',
+        correct: false,
+      },
+      { challengeId: frenchChallenge20.id, text: 'Beautiful', correct: false },
+      { challengeId: frenchChallenge20.id, text: 'Ugly', correct: false },
+    ]);
+
+    const [frenchChallenge20b] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson8.id,
+        type: 'ASSIST',
+        question: 'Translate "short" to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge20b.id, text: 'Petit', correct: true },
+      { challengeId: frenchChallenge20b.id, text: 'Grand', correct: false },
+      { challengeId: frenchChallenge20b.id, text: 'Beau', correct: false },
+      { challengeId: frenchChallenge20b.id, text: 'Moche', correct: false },
+    ]);
+
+    const [frenchLesson9] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit3.id,
+        title: 'At the Restaurant',
+        order: 2,
+      })
+      .returning();
+
+    const [frenchChallenge21] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson9.id,
+        type: 'ASSIST',
+        question: 'How do you say "I would like" in French?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge21.id, text: 'Je voudrais', correct: true },
+      { challengeId: frenchChallenge21.id, text: 'Je veux', correct: false },
+      {
+        challengeId: frenchChallenge21.id,
+        text: "J'ai besoin",
+        correct: false,
+      },
+      { challengeId: frenchChallenge21.id, text: "J'ai", correct: false },
+    ]);
+
+    const [frenchChallenge21b] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson9.id,
+        type: 'SELECT',
+        question: 'What does "l\'addition" mean?',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge21b.id, text: 'The bill', correct: true },
+      { challengeId: frenchChallenge21b.id, text: 'The menu', correct: false },
+      { challengeId: frenchChallenge21b.id, text: 'The table', correct: false },
+      {
+        challengeId: frenchChallenge21b.id,
+        text: 'The waiter',
+        correct: false,
+      },
+    ]);
+
+    // Spanish Unit 1 - Lesson 4: Pronouns
+    const [spanishLesson10] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit1.id,
+        title: 'Pronouns',
+        order: 4,
+      })
+      .returning();
+
+    const [spanishChallenge27] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson10.id,
+        type: 'SELECT',
+        question: 'What does "yo" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge27.id, text: 'I', correct: true },
+      { challengeId: spanishChallenge27.id, text: 'You', correct: false },
+      { challengeId: spanishChallenge27.id, text: 'He', correct: false },
+      { challengeId: spanishChallenge27.id, text: 'She', correct: false },
+    ]);
+
+    const [spanishChallenge28] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson10.id,
+        type: 'ASSIST',
+        question: 'Translate "you" (informal) to Spanish',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge28.id, text: 'Tú', correct: true },
+      { challengeId: spanishChallenge28.id, text: 'Yo', correct: false },
+      { challengeId: spanishChallenge28.id, text: 'Él', correct: false },
+      { challengeId: spanishChallenge28.id, text: 'Ella', correct: false },
+    ]);
+
+    // Spanish Unit 2 - Lesson 3: More Family
+    const [spanishLesson11] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit2.id,
+        title: 'Extended Family',
+        order: 3,
+      })
+      .returning();
+
+    const [spanishChallenge29] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson11.id,
+        type: 'SELECT',
+        question: 'What does "abuelo" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: spanishChallenge29.id,
+        text: 'Grandfather',
+        correct: true,
+      },
+      {
+        challengeId: spanishChallenge29.id,
+        text: 'Grandmother',
+        correct: false,
+      },
+      { challengeId: spanishChallenge29.id, text: 'Uncle', correct: false },
+      { challengeId: spanishChallenge29.id, text: 'Aunt', correct: false },
+    ]);
+
+    // Spanish Unit 3 - Lesson 3: Drinks
+    const [spanishLesson12] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit3.id,
+        title: 'Drinks',
+        order: 3,
+      })
+      .returning();
+
+    const [spanishChallenge30] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson12.id,
+        type: 'SELECT',
+        question: 'What does "café" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge30.id, text: 'Coffee', correct: true },
+      { challengeId: spanishChallenge30.id, text: 'Tea', correct: false },
+      { challengeId: spanishChallenge30.id, text: 'Juice', correct: false },
+      { challengeId: spanishChallenge30.id, text: 'Wine', correct: false },
+    ]);
+
+    // Spanish Unit 4 - Lesson 2: Transportation
+    const [spanishLesson13] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit4.id,
+        title: 'Transportation',
+        order: 2,
+      })
+      .returning();
+
+    const [spanishChallenge31] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson13.id,
+        type: 'SELECT',
+        question: 'What does "coche" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge31.id, text: 'Car', correct: true },
+      { challengeId: spanishChallenge31.id, text: 'Bus', correct: false },
+      { challengeId: spanishChallenge31.id, text: 'Train', correct: false },
+      { challengeId: spanishChallenge31.id, text: 'Plane', correct: false },
+    ]);
+
+    // Spanish Unit 5 - Lesson 2: More Colors
+    const [spanishLesson14] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: spanishUnit5.id,
+        title: 'More Colors',
+        order: 2,
+      })
+      .returning();
+
+    const [spanishChallenge32] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson14.id,
+        type: 'ASSIST',
+        question: 'Translate "green" to Spanish',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge32.id, text: 'Verde', correct: true },
+      { challengeId: spanishChallenge32.id, text: 'Rojo', correct: false },
+      { challengeId: spanishChallenge32.id, text: 'Azul', correct: false },
+      { challengeId: spanishChallenge32.id, text: 'Amarillo', correct: false },
+    ]);
+
+    // French Unit 1 - Lesson 4: Pronouns
+    const [frenchLesson10] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit1.id,
+        title: 'Pronouns',
+        order: 4,
+      })
+      .returning();
+
+    const [frenchChallenge25] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson10.id,
+        type: 'SELECT',
+        question: 'What does "je" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge25.id, text: 'I', correct: true },
+      { challengeId: frenchChallenge25.id, text: 'You', correct: false },
+      { challengeId: frenchChallenge25.id, text: 'He', correct: false },
+      { challengeId: frenchChallenge25.id, text: 'She', correct: false },
+    ]);
+
+    const [frenchChallenge26] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson10.id,
+        type: 'ASSIST',
+        question: 'Translate "you" (informal) to French',
+        order: 2,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge26.id, text: 'Tu', correct: true },
+      { challengeId: frenchChallenge26.id, text: 'Je', correct: false },
+      { challengeId: frenchChallenge26.id, text: 'Il', correct: false },
+      { challengeId: frenchChallenge26.id, text: 'Elle', correct: false },
+    ]);
+
+    // French Unit 2 - Lesson 3: More Family
+    const [frenchLesson11] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit2.id,
+        title: 'Extended Family',
+        order: 3,
+      })
+      .returning();
+
+    const [frenchChallenge27] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson11.id,
+        type: 'SELECT',
+        question: 'What does "grand-père" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge27.id, text: 'Grandfather', correct: true },
+      {
+        challengeId: frenchChallenge27.id,
+        text: 'Grandmother',
+        correct: false,
+      },
+      { challengeId: frenchChallenge27.id, text: 'Uncle', correct: false },
+      { challengeId: frenchChallenge27.id, text: 'Aunt', correct: false },
+    ]);
+
+    // French Unit 3 - Lesson 3: Drinks
+    const [frenchLesson12] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit3.id,
+        title: 'Drinks',
+        order: 3,
+      })
+      .returning();
+
+    const [frenchChallenge28] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson12.id,
+        type: 'SELECT',
+        question: 'What does "café" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge28.id, text: 'Coffee', correct: true },
+      { challengeId: frenchChallenge28.id, text: 'Tea', correct: false },
+      { challengeId: frenchChallenge28.id, text: 'Juice', correct: false },
+      { challengeId: frenchChallenge28.id, text: 'Wine', correct: false },
+    ]);
+
+    // French Unit 4 - Lesson 2: Transportation
+    const [frenchLesson13] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit4.id,
+        title: 'Transportation',
+        order: 2,
+      })
+      .returning();
+
+    const [frenchChallenge29] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson13.id,
+        type: 'SELECT',
+        question: 'What does "voiture" mean?',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge29.id, text: 'Car', correct: true },
+      { challengeId: frenchChallenge29.id, text: 'Bus', correct: false },
+      { challengeId: frenchChallenge29.id, text: 'Train', correct: false },
+      { challengeId: frenchChallenge29.id, text: 'Plane', correct: false },
+    ]);
+
+    // French Unit 5 - Lesson 2: More Colors
+    const [frenchLesson14] = await db
+      .insert(schema.lessons)
+      .values({
+        unitId: frenchUnit5.id,
+        title: 'More Colors',
+        order: 2,
+      })
+      .returning();
+
+    const [frenchChallenge30] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson14.id,
+        type: 'ASSIST',
+        question: 'Translate "green" to French',
+        order: 1,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge30.id, text: 'Vert', correct: true },
+      { challengeId: frenchChallenge30.id, text: 'Rouge', correct: false },
+      { challengeId: frenchChallenge30.id, text: 'Bleu', correct: false },
+      { challengeId: frenchChallenge30.id, text: 'Jaune', correct: false },
+    ]);
+
+    // Add more challenges to existing lessons to make them more comprehensive
+    // Spanish Lesson 1 - Additional challenges
+    const [spanishChallenge24] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson1.id,
+        type: 'SELECT',
+        question: 'What does "Adiós" mean?',
+        order: 6,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge24.id, text: 'Goodbye', correct: true },
+      { challengeId: spanishChallenge24.id, text: 'Hello', correct: false },
+      { challengeId: spanishChallenge24.id, text: 'Thank you', correct: false },
+      { challengeId: spanishChallenge24.id, text: 'Please', correct: false },
+    ]);
+
+    // Spanish Lesson 2 - Additional challenges
+    const [spanishChallenge25] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson2.id,
+        type: 'SELECT',
+        question: 'How do you say "Excuse me" in Spanish?',
+        order: 5,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge25.id, text: 'Perdón', correct: true },
+      { challengeId: spanishChallenge25.id, text: 'Gracias', correct: false },
+      { challengeId: spanishChallenge25.id, text: 'Por favor', correct: false },
+      { challengeId: spanishChallenge25.id, text: 'De nada', correct: false },
+    ]);
+
+    // Spanish Lesson 3 - Additional challenges
+    const [spanishChallenge26] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: spanishLesson3.id,
+        type: 'SELECT',
+        question: 'What is "diez" in English?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: spanishChallenge26.id, text: 'Ten', correct: true },
+      { challengeId: spanishChallenge26.id, text: 'Nine', correct: false },
+      { challengeId: spanishChallenge26.id, text: 'Eight', correct: false },
+      { challengeId: spanishChallenge26.id, text: 'Seven', correct: false },
+    ]);
+
+    // French Lesson 1 - Additional challenges
+    const [frenchChallenge22] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson1.id,
+        type: 'SELECT',
+        question: 'What does "Au revoir" mean?',
+        order: 5,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge22.id, text: 'Goodbye', correct: true },
+      { challengeId: frenchChallenge22.id, text: 'Hello', correct: false },
+      { challengeId: frenchChallenge22.id, text: 'Thank you', correct: false },
+      { challengeId: frenchChallenge22.id, text: 'Please', correct: false },
+    ]);
+
+    // French Lesson 2 - Additional challenges
+    const [frenchChallenge23] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson2.id,
+        type: 'SELECT',
+        question: 'How do you say "Excuse me" in French?',
+        order: 4,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge23.id, text: 'Excusez-moi', correct: true },
+      { challengeId: frenchChallenge23.id, text: 'Merci', correct: false },
+      {
+        challengeId: frenchChallenge23.id,
+        text: "S'il vous plaît",
+        correct: false,
+      },
+      { challengeId: frenchChallenge23.id, text: 'De rien', correct: false },
+    ]);
+
+    // French Lesson 3 - Additional challenges
+    const [frenchChallenge24] = await db
+      .insert(schema.challenges)
+      .values({
+        lessonId: frenchLesson3.id,
+        type: 'SELECT',
+        question: 'What is "dix" in English?',
+        order: 3,
+      })
+      .returning();
+
+    await db.insert(schema.challengeOptions).values([
+      { challengeId: frenchChallenge24.id, text: 'Ten', correct: true },
+      { challengeId: frenchChallenge24.id, text: 'Nine', correct: false },
+      { challengeId: frenchChallenge24.id, text: 'Eight', correct: false },
+      { challengeId: frenchChallenge24.id, text: 'Seven', correct: false },
+    ]);
+
+    console.log('✅ Database seeded successfully!');
+    console.log(`   - Created 2 courses (Spanish, French)`);
+    console.log(`   - Created 10 units (5 per course)`);
+    console.log(`   - Created 28+ lessons`);
+    console.log(`   - Created 80+ challenges`);
   } catch (error) {
-    console.error(error);
+    console.error('❌ Error seeding database:', error);
     throw new Error('Failed to seed database');
   }
 };

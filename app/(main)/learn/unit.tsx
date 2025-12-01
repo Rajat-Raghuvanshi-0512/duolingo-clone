@@ -27,7 +27,7 @@ const UnitCard = ({
 }: UnitCardProps) => {
   return (
     <>
-      <UnitBanner title={title} description={description} />
+      <UnitBanner title={title} description={description} order={order} />
       <div className="flex flex-col items-center relative">
         {lessons.map((lesson, index) => {
           const isCurrentLesson = lesson.id === activeLesson?.id;

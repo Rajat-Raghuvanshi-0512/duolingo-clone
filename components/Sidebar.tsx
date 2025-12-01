@@ -25,11 +25,11 @@ const Sidebar = ({ className }: SidebarProps) => {
       </Link>
       <div className="flex flex-col gap-y-2 flex-1">
         <SidebarItem label="Learn" iconSrc={'/icons/home.svg'} href="/learn" />
-        <SidebarItem
+        {/* <SidebarItem
           label="Practice"
           iconSrc={'/icons/practice.svg'}
           href="/practice"
-        />
+        /> */}
         <SidebarItem
           label="Leaderboards"
           iconSrc={'/icons/leaderboard.svg'}

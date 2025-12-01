@@ -7,7 +7,7 @@ const MobileSidebar = () => {
   return (
     <Sheet>
       <SheetTrigger>
-        <MenuIcon className="size-6 text-white" />
+        <MenuIcon className="size-6 text-slate-500" />
       </SheetTrigger>
       <SheetContent aria-describedby="sidebar" side="left">
         <SheetTitle className="sr-only">Sidebar</SheetTitle>

@@ -16,7 +16,7 @@ const Footer = ({ disabled, status, onCheck, lessonId }: FooterProps) => {
   return (
     <footer
       className={cn(
-        'lg:h-[140px] h-[100px] border-t-2',
+        'h-[100px] border-t-2',
         status === 'correct' && 'border-transparent bg-green-100',
         status === 'incorrect' && 'border-transparent bg-rose-100'
       )}

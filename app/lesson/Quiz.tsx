@@ -188,7 +188,7 @@ const Quiz = ({
       />
       <div className="flex-1">
         <div className="h-full flex items-center justify-center">
-          <div className="lg:min-h-[350px] h-[300px] w-full lg:max-w-2xl mx-auto  px-6 lg:px-0 flex flex-col gap-y-12">
+          <div className="lg:min-h-[350px] w-full lg:max-w-2xl mx-auto  px-6 lg:px-0 flex flex-col gap-y-12">
             <h1 className="lg:text-3xl text-xl lg:text-start font-bold text-center text-neutral-700">
               {title}
             </h1>

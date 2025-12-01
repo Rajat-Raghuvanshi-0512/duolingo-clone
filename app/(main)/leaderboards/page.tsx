@@ -11,6 +11,8 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import Promo from '@/components/Promo';
 import Quests from '@/components/Quests';
 
+export const dynamic = 'force-dynamic';
+
 const LeaderboardPage = async () => {
   const userprogressPromise = getUserProgress();
   const userSubscriptionPromise = getUserSubscription();

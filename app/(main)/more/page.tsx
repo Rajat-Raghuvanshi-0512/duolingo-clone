@@ -4,14 +4,13 @@ import UserProgress from '@/components/UserProgress';
 import { getUserProgress, getUserSubscription } from '@/db/queries';
 import { redirect } from 'next/navigation';
 import React from 'react';
-import Items from './Items';
-import Image from 'next/image';
+import ComingSoon from '@/components/ComingSoon';
 import Promo from '@/components/Promo';
 import Quests from '@/components/Quests';
 
 export const dynamic = 'force-dynamic';
 
-const ShopPage = async () => {
+const MorePage = async () => {
   const userprogressPromise = getUserProgress();
   const userSubscriptionPromise = getUserSubscription();
   const [userProgress, userSubscription] = await Promise.all([
@@ -35,23 +34,10 @@ const ShopPage = async () => {
         <Quests points={userProgress.points} />
       </StickyWrapper>
       <FeedWrapper>
-        <div className="w-full flex flex-col items-center">
-          <Image src="/icons/shop.svg" alt="shop" width={90} height={90} />
-        </div>
-        <h1 className="text-2xl font-bold text-center text-neutral-800 my-6">
-          Shop
-        </h1>
-        <p className="text-center text-muted-foreground mb-6 text-lg">
-          Spend your points on cool stuff
-        </p>
-        <Items
-          hearts={userProgress.hearts}
-          points={userProgress.points}
-          hasActiveSubscription={hasActiveSubscription}
-        />
+        <ComingSoon />
       </FeedWrapper>
     </div>
   );
 };
 
-export default ShopPage;
+export default MorePage;

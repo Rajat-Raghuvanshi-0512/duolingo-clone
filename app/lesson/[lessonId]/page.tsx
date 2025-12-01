@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import React from 'react';
 import Quiz from '../Quiz';
 
+export const dynamic = 'force-dynamic';
+
 const LessonIdPage = async ({
   params,
 }: {

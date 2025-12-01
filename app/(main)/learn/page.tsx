@@ -14,6 +14,8 @@ import UnitCard from './unit';
 import Promo from '@/components/Promo';
 import Quests from '@/components/Quests';
 
+export const dynamic = 'force-dynamic';
+
 const LearnPage = async () => {
   const userProgressPromise = getUserProgress();
   const unitsPromise = getUnits();
@@ -54,7 +56,7 @@ const LearnPage = async () => {
       <FeedWrapper>
         <Header title={userProgress.activeCourse.title} />
         {units.map((unit) => (
-          <div key={unit.id}>
+          <div key={unit.id} className="mb-12 lg:mb-16 mt-5">
             <UnitCard
               id={unit.id}
               order={unit.order}

@@ -3,7 +3,7 @@ import StickyWrapper from '@/components/StickyWrapper';
 import Skeleton from '@/components/Skeleton';
 import React from 'react';
 
-const LearnLoading = () => {
+const MoreLoading = () => {
   return (
     <div className="flex flex-row-reverse gap-12 px-6">
       <StickyWrapper>
@@ -33,30 +33,16 @@ const LearnLoading = () => {
         </div>
       </StickyWrapper>
       <FeedWrapper>
-        {/* Header Skeleton */}
-        <div className="sticky top-0 bg-white pb-3 lg:pt-7 lg:-mt-7 flex items-center justify-between border-b-2 mb-5">
-          <Skeleton className="h-10 w-10 rounded-lg" />
-          <Skeleton className="h-6 w-32 rounded-lg" />
-          <Skeleton className="h-10 w-10 rounded-lg" />
-        </div>
-        {/* Unit Cards Skeleton */}
-        {[1, 2, 3].map((unitIndex) => (
-          <div key={unitIndex} className="mb-12 lg:mb-16 mt-5">
-            {/* Unit Banner Skeleton */}
-            <Skeleton className="h-32 w-full rounded-xl mb-4" />
-            {/* Lesson Buttons Skeleton */}
-            <div className="flex flex-col items-center relative">
-              {[1, 2, 3, 4].map((lessonIndex) => (
-                <div key={lessonIndex} className="mb-4">
-                  <Skeleton className="h-16 w-16 rounded-full" />
-                </div>
-              ))}
-            </div>
+        {/* Coming Soon Content Skeleton */}
+        <div className="w-full flex flex-col items-center justify-center py-12 px-6">
+          <div className="text-center space-y-4">
+            <Skeleton className="h-9 w-48 mx-auto rounded-lg" />
+            <Skeleton className="h-6 w-80 mx-auto rounded-lg" />
           </div>
-        ))}
+        </div>
       </FeedWrapper>
     </div>
   );
 };
 
-export default LearnLoading;
+export default MoreLoading;

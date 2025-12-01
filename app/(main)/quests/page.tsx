@@ -8,6 +8,8 @@ import { Progress } from '@/components/ui/progress';
 import Promo from '@/components/Promo';
 import { quests } from '@/lib/constants';
 
+export const dynamic = 'force-dynamic';
+
 const QuestsPage = async () => {
   const userprogressPromise = getUserProgress();
   const userSubscriptionPromise = getUserSubscription();
