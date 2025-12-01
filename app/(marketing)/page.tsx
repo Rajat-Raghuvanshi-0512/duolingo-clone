@@ -39,7 +39,7 @@ const MarketingPage = () => {
               </SignInButton>
             </SignedOut>
             <SignedIn>
-              <Button className="w-full" size="lg" variant="secondary">
+              <Button className="w-full" size="lg" variant="secondary" asChild>
                 <Link href="/learn">Continue Learning</Link>
               </Button>
             </SignedIn>
