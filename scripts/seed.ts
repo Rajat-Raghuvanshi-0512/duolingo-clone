@@ -1421,7 +1421,11 @@ const main = async () => {
     await db.insert(schema.challengeOptions).values([
       { challengeId: spanishChallenge35.id, text: 'Young', correct: true },
       { challengeId: spanishChallenge35.id, text: 'Old', correct: false },
-      { challengeId: spanishChallenge35.id, text: 'Middle-aged', correct: false },
+      {
+        challengeId: spanishChallenge35.id,
+        text: 'Middle-aged',
+        correct: false,
+      },
       { challengeId: spanishChallenge35.id, text: 'Teenager', correct: false },
     ]);
 
@@ -1639,10 +1643,26 @@ const main = async () => {
       .returning();
 
     await db.insert(schema.challengeOptions).values([
-      { challengeId: spanishChallenge41.id, text: '¿Dónde está...?', correct: true },
-      { challengeId: spanishChallenge41.id, text: '¿Cómo está...?', correct: false },
-      { challengeId: spanishChallenge41.id, text: '¿Qué es...?', correct: false },
-      { challengeId: spanishChallenge41.id, text: '¿Cuándo es...?', correct: false },
+      {
+        challengeId: spanishChallenge41.id,
+        text: '¿Dónde está...?',
+        correct: true,
+      },
+      {
+        challengeId: spanishChallenge41.id,
+        text: '¿Cómo está...?',
+        correct: false,
+      },
+      {
+        challengeId: spanishChallenge41.id,
+        text: '¿Qué es...?',
+        correct: false,
+      },
+      {
+        challengeId: spanishChallenge41.id,
+        text: '¿Cuándo es...?',
+        correct: false,
+      },
     ]);
 
     const [spanishChallenge42] = await db
@@ -1745,7 +1765,11 @@ const main = async () => {
 
     await db.insert(schema.challengeOptions).values([
       { challengeId: spanishChallenge46.id, text: 'Boleto', correct: true },
-      { challengeId: spanishChallenge46.id, text: 'Aeropuerto', correct: false },
+      {
+        challengeId: spanishChallenge46.id,
+        text: 'Aeropuerto',
+        correct: false,
+      },
       { challengeId: spanishChallenge46.id, text: 'Avión', correct: false },
       { challengeId: spanishChallenge46.id, text: 'Pasaporte', correct: false },
     ]);
@@ -1815,7 +1839,11 @@ const main = async () => {
       .returning();
 
     await db.insert(schema.challengeOptions).values([
-      { challengeId: spanishChallenge47.id, text: 'Big / Large', correct: true },
+      {
+        challengeId: spanishChallenge47.id,
+        text: 'Big / Large',
+        correct: true,
+      },
       { challengeId: spanishChallenge47.id, text: 'Small', correct: false },
       { challengeId: spanishChallenge47.id, text: 'Medium', correct: false },
       { challengeId: spanishChallenge47.id, text: 'Huge', correct: false },
@@ -1879,7 +1907,11 @@ const main = async () => {
       { challengeId: spanishChallenge50.id, text: 'Cuadrado', correct: true },
       { challengeId: spanishChallenge50.id, text: 'Círculo', correct: false },
       { challengeId: spanishChallenge50.id, text: 'Triángulo', correct: false },
-      { challengeId: spanishChallenge50.id, text: 'Rectángulo', correct: false },
+      {
+        challengeId: spanishChallenge50.id,
+        text: 'Rectángulo',
+        correct: false,
+      },
     ]);
 
     // Spanish Unit 5 - Lesson 5: Adjectives
@@ -1903,7 +1935,11 @@ const main = async () => {
       .returning();
 
     await db.insert(schema.challengeOptions).values([
-      { challengeId: spanishChallenge51.id, text: 'Beautiful / Pretty', correct: true },
+      {
+        challengeId: spanishChallenge51.id,
+        text: 'Beautiful / Pretty',
+        correct: true,
+      },
       { challengeId: spanishChallenge51.id, text: 'Ugly', correct: false },
       { challengeId: spanishChallenge51.id, text: 'Nice', correct: false },
       { challengeId: spanishChallenge51.id, text: 'Good', correct: false },
@@ -2057,7 +2093,11 @@ const main = async () => {
 
     await db.insert(schema.challengeOptions).values([
       { challengeId: frenchChallenge27b.id, text: 'Grand-mère', correct: true },
-      { challengeId: frenchChallenge27b.id, text: 'Grand-père', correct: false },
+      {
+        challengeId: frenchChallenge27b.id,
+        text: 'Grand-père',
+        correct: false,
+      },
       { challengeId: frenchChallenge27b.id, text: 'Oncle', correct: false },
       { challengeId: frenchChallenge27b.id, text: 'Tante', correct: false },
     ]);
@@ -2103,7 +2143,11 @@ const main = async () => {
       { challengeId: frenchChallenge32.id, text: 'Voisin', correct: true },
       { challengeId: frenchChallenge32.id, text: 'Ami', correct: false },
       { challengeId: frenchChallenge32.id, text: 'Famille', correct: false },
-      { challengeId: frenchChallenge32.id, text: 'Connaissance', correct: false },
+      {
+        challengeId: frenchChallenge32.id,
+        text: 'Connaissance',
+        correct: false,
+      },
     ]);
 
     // French Unit 2 - Lesson 5: Age & Descriptions
@@ -2129,7 +2173,11 @@ const main = async () => {
     await db.insert(schema.challengeOptions).values([
       { challengeId: frenchChallenge33.id, text: 'Young', correct: true },
       { challengeId: frenchChallenge33.id, text: 'Old', correct: false },
-      { challengeId: frenchChallenge33.id, text: 'Middle-aged', correct: false },
+      {
+        challengeId: frenchChallenge33.id,
+        text: 'Middle-aged',
+        correct: false,
+      },
       { challengeId: frenchChallenge33.id, text: 'Teenager', correct: false },
     ]);
 
@@ -2278,7 +2326,11 @@ const main = async () => {
     await db.insert(schema.challengeOptions).values([
       { challengeId: frenchChallenge38.id, text: 'Carotte', correct: true },
       { challengeId: frenchChallenge38.id, text: 'Tomate', correct: false },
-      { challengeId: frenchChallenge38.id, text: 'Pomme de terre', correct: false },
+      {
+        challengeId: frenchChallenge38.id,
+        text: 'Pomme de terre',
+        correct: false,
+      },
       { challengeId: frenchChallenge38.id, text: 'Oignon', correct: false },
     ]);
 
@@ -2347,10 +2399,22 @@ const main = async () => {
       .returning();
 
     await db.insert(schema.challengeOptions).values([
-      { challengeId: frenchChallenge39.id, text: "Où est...?", correct: true },
-      { challengeId: frenchChallenge39.id, text: "Comment est...?", correct: false },
-      { challengeId: frenchChallenge39.id, text: "Qu'est-ce que...?", correct: false },
-      { challengeId: frenchChallenge39.id, text: "Quand est...?", correct: false },
+      { challengeId: frenchChallenge39.id, text: 'Où est...?', correct: true },
+      {
+        challengeId: frenchChallenge39.id,
+        text: 'Comment est...?',
+        correct: false,
+      },
+      {
+        challengeId: frenchChallenge39.id,
+        text: "Qu'est-ce que...?",
+        correct: false,
+      },
+      {
+        challengeId: frenchChallenge39.id,
+        text: 'Quand est...?',
+        correct: false,
+      },
     ]);
 
     const [frenchChallenge40] = await db
@@ -2411,7 +2475,11 @@ const main = async () => {
       { challengeId: frenchChallenge42.id, text: 'Chambre', correct: true },
       { challengeId: frenchChallenge42.id, text: 'Hôtel', correct: false },
       { challengeId: frenchChallenge42.id, text: 'Lit', correct: false },
-      { challengeId: frenchChallenge42.id, text: 'Salle de bain', correct: false },
+      {
+        challengeId: frenchChallenge42.id,
+        text: 'Salle de bain',
+        correct: false,
+      },
     ]);
 
     // French Unit 4 - Lesson 5: At the Airport
@@ -2611,7 +2679,11 @@ const main = async () => {
       .returning();
 
     await db.insert(schema.challengeOptions).values([
-      { challengeId: frenchChallenge49.id, text: 'Beautiful / Handsome', correct: true },
+      {
+        challengeId: frenchChallenge49.id,
+        text: 'Beautiful / Handsome',
+        correct: true,
+      },
       { challengeId: frenchChallenge49.id, text: 'Ugly', correct: false },
       { challengeId: frenchChallenge49.id, text: 'Nice', correct: false },
       { challengeId: frenchChallenge49.id, text: 'Good', correct: false },

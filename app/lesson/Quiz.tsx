@@ -1,6 +1,6 @@
 'use client';
 
-import { challengeOptions, challenges } from '@/db/schema';
+import { challengeOptions, challenges, userSubscriptions } from '@/db/schema';
 import { useState, useTransition } from 'react';
 import Header from './Header';
 import QuestionBubble from './QuestionBubble';
@@ -24,7 +24,11 @@ type QuizProps = {
   })[];
   initialLessonId: number;
   initalHeartCount: number;
-  userSubscription: null;
+  userSubscription:
+    | (typeof userSubscriptions.$inferSelect & {
+        isActive: boolean;
+      })
+    | null;
 };
 const Quiz = ({
   initialPercentage,
@@ -47,14 +51,14 @@ const Quiz = ({
   });
   const { openModal: openHeartsModal } = useHeartsModal();
   const { openModal: openPracticeModal } = usePracticeModal();
-  const [lessonId, setLessonId] = useState(initialLessonId);
+  const [lessonId, _setLessonId] = useState(initialLessonId);
   const [pending, startTransition] = useTransition();
   const [hearts, setHearts] = useState(initalHeartCount);
   const [percentage, setPercentage] = useState(() => {
     // If the initial percentage is 100, set it to 0 as it is practice lesson
     return initialPercentage === 100 ? 0 : initialPercentage;
   });
-  const [challenges, setChallenges] = useState(initialChallenges);
+  const [challenges, _setChallenges] = useState(initialChallenges);
   const [activeChallengeIndex, setActiveChallengeIndex] = useState(() => {
     const unCompletedChallengeIndex = challenges.findIndex(
       (challenge) => !challenge.completed
@@ -184,7 +188,9 @@ const Quiz = ({
       <Header
         hearts={hearts}
         percentage={percentage}
-        hasActiveSubscription={false}
+        hasActiveSubscription={
+          userSubscription ? userSubscription.isActive : false
+        }
       />
       <div className="flex-1">
         <div className="h-full flex items-center justify-center">

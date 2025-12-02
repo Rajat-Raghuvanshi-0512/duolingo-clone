@@ -1,4 +1,4 @@
-import { getLesson, getUserProgress } from '@/db/queries';
+import { getLesson, getUserProgress, getUserSubscription } from '@/db/queries';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import Quiz from './Quiz';
@@ -8,9 +8,11 @@ export const dynamic = 'force-dynamic';
 const LessonPage = async () => {
   const lessonPromise = getLesson();
   const userProgressPromise = getUserProgress();
-  const [lesson, userProgress] = await Promise.all([
+  const userSubscriptionPromise = getUserSubscription();
+  const [lesson, userProgress, userSubscription] = await Promise.all([
     lessonPromise,
     userProgressPromise,
+    userSubscriptionPromise,
   ]);
 
   if (!lesson || !userProgress) {
@@ -27,7 +29,7 @@ const LessonPage = async () => {
       initialChallenges={lesson.challenges}
       initialLessonId={lesson.id}
       initalHeartCount={userProgress.hearts}
-      userSubscription={null}
+      userSubscription={userSubscription}
     />
   );
 };
